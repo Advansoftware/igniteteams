@@ -10,9 +10,6 @@
       "@components/*":[
         "./src/components/*"
       ],
-      "@routes/*":[
-        "./src/routes/*"
-      ],
       "@screens/*":[
         "./src/screens/*"
       ],
@@ -23,7 +20,7 @@
         "./src/theme/*"
       ],
       "@utils/*":[
-        "./src/utiçs/*"
+        "./src/utils/*"
       ],
     }
   }
