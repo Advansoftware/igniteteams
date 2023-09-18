@@ -8,8 +8,10 @@ import { useCallback, useState } from 'react';
 import { Button } from '@components/Button';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { groupsGetAll } from '@storage/group/groupsGetAll';
+import { Loading } from '@components/Loading';
 
 export default function Groups() {
+  const [isLoading, setIsLoading] = useState(true);
   const [groups, setGroups] = useState<string[]>([]);
   const navigation = useNavigation();
   function handleNewGroup(){
@@ -17,11 +19,15 @@ export default function Groups() {
   }
 async function fetchGroups() {
   try {
+      setIsLoading(true);
       const data = await groupsGetAll();
       setGroups(data);
+      setIsLoading(false);
   } catch (error) {
     console.error(error)
-  } 
+  } finally{
+    setIsLoading(false);
+  }
 }
 
 function handelOpenGroup(group:string){
@@ -38,22 +44,23 @@ function handelOpenGroup(group:string){
         title='Turmas'
         subtitle='Jogue com a sua turma'
       />
-      <FlatList 
-        data={groups}
-        keyExtractor={item => item}
-        renderItem={({item})=>(
-          <GroupCard 
-          title={item}
-          onPress={()=>handelOpenGroup(item)}
-          />
-        )}
-        contentContainerStyle={groups.length === 0 && {flex: 1}}
-        ListEmptyComponent={()=> (
-          <ListEmpty message='Cadastre uma turma' />
-        )}
-        showsVerticalScrollIndicator={false}
-      />
-
+      {isLoading ? <Loading/> : 
+        <FlatList 
+          data={groups}
+          keyExtractor={item => item}
+          renderItem={({item})=>(
+            <GroupCard 
+            title={item}
+            onPress={()=>handelOpenGroup(item)}
+            />
+          )}
+          contentContainerStyle={groups.length === 0 && {flex: 1}}
+          ListEmptyComponent={()=> (
+            <ListEmpty message='Cadastre uma turma' />
+          )}
+          showsVerticalScrollIndicator={false}
+        />
+      }
       <Button 
         title='Criar nova turma'
         onPress={handleNewGroup}
